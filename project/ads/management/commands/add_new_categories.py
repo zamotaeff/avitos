@@ -1,9 +1,9 @@
 import json
 
+from django.conf import settings
 from django.core.management import BaseCommand
 
 from ads.models import Category
-from ads.helpers import FILE_JSON_CATEGORIES
 
 
 class Command(BaseCommand):
@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        with open(FILE_JSON_CATEGORIES, 'r', encoding='utf-8') as file:
+        with open(settings.FILE_JSON_CATEGORIES, 'r', encoding='utf-8') as file:
             json_data = json.load(file)
 
             for item in json_data:

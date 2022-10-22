@@ -1,12 +1,14 @@
+"""json for read file"""
 import json
 
+from avito.settings import FILE_JSON_LOCATIONS
 from django.core.management import BaseCommand
 
 from users.models import Location
-from ads.helpers import FILE_JSON_LOCATIONS
 
 
 class Command(BaseCommand):
+
     help = 'Add new object from json files'
 
     # TODO: pass file names in parameters

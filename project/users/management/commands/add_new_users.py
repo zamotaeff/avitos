@@ -1,9 +1,9 @@
 import json
 
+from avito.settings import FILE_JSON_USERS
 from django.core.management import BaseCommand
 
-from users.models import Location, User
-from ads.helpers import FILE_JSON_USERS
+from users.models import User
 
 
 class Command(BaseCommand):
@@ -17,8 +17,6 @@ class Command(BaseCommand):
 
             for item in json_data:
 
-                user_location = Location.objects.get(item.get('location_id'))
-
                 new_user = User(
                     first_name=item.get('first_name'),
                     last_name=item.get('last_name'),
@@ -26,6 +24,6 @@ class Command(BaseCommand):
                     password=item.get('password'),
                     role=item.get('role'),
                     age=item.get('age'),
-                    location=user_location
+                    location_id=item.get('location_id')
                 )
                 new_user.save()
