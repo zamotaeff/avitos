@@ -127,3 +127,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSV JSON data files
+FILE_CSV_ADS = '../datasets/ad.csv'
+FILE_CSV_CATEGORIES = '../datasets/category.csv'
+FILE_CSV_LOCATIONS = '../datasets/location.csv'
+FILE_CSV_USERS = '../datasets/user.csv'
+
+FILE_JSON_ADS = '../datasets/ads.json'
+FILE_JSON_CATEGORIES = '../datasets/categories.json'
+FILE_JSON_LOCATIONS = '../datasets/locations.json'
+FILE_JSON_USERS = '../datasets/users.json'
