@@ -11,6 +11,9 @@ class Location(models.Model):
                               decimal_places=6,
                               verbose_name='Долгота')
 
+    def __str__(self):
+        return f'{self.name}'
+
     class Meta:
         ordering = ()
         verbose_name = 'Локация'
@@ -45,6 +48,9 @@ class User(models.Model):
     location = models.ForeignKey(Location,
                                  verbose_name='Локация',
                                  on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.username}'
 
     class Meta:
         ordering = ()

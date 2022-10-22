@@ -7,6 +7,9 @@ class Category(models.Model):
     name = models.CharField(max_length=20,
                             verbose_name='Категория')
 
+    def __str__(self):
+        return f'{self.name}'
+
     class Meta:
         ordering = ()
         verbose_name = 'Категория'
@@ -26,6 +29,9 @@ class Ad(models.Model):
     category = models.ForeignKey(Category,
                                  verbose_name='Категория',
                                  on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}'
 
     class Meta:
         ordering = ()
