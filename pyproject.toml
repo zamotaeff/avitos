@@ -1,12 +1,15 @@
 [tool.poetry]
-name = "lesson27_solution"
+name = "home_work_28"
 version = "0.1.0"
 description = ""
-authors = ["Albina <aalmukhametova@gmail.com>"]
+authors = ["Vasiliy <zamotaev.v-a@yandex.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
 Django = "^4.0.1"
+psycopg2 = "^2.9.4"
+pillow = "^9.2.0"
+pylint = "^2.15.5"
 
 [tool.poetry.dev-dependencies]
 
