@@ -12,7 +12,7 @@ class LocationAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'username', 'role', 'age', 'id')
+    list_display = ('username', 'first_name', 'role', 'age', 'id')
     list_display_links = ('username', )
     list_filter = ('role', )
     list_editable = ('role', 'age')
