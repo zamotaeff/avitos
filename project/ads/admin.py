@@ -14,6 +14,6 @@ class CategoryAdmin(admin.ModelAdmin):
 class AdAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'price', 'is_published', 'category', 'id')
     list_display_links = ('name', )
-    list_filter = ('is_published', 'category')
+    list_filter = ('is_published', 'category', 'author')
     list_editable = ('is_published', 'price')
     search_fields = ('name', )
