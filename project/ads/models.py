@@ -14,7 +14,7 @@ class Category(models.Model):
 
 
 class Ad(models.Model):
-    name = models.CharField(max_length=20,
+    name = models.CharField(max_length=50,
                             verbose_name='Название')
     author = models.ForeignKey(User,
                                verbose_name='Пользователь',
