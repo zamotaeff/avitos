@@ -20,6 +20,7 @@ def index_route(request):
 @method_decorator(csrf_exempt, name='dispatch')
 class CategoryListView(ListView):
     model = Category
+    queryset = Category.objects.all().order_by('name')
 
     def get(self, request, *args, **kwargs):
         categories = self.get_queryset()
@@ -107,14 +108,15 @@ class CategoryUpdateView(UpdateView):
 
 class AdListView(ListView):
     model = Ad
+    queryset = Ad.objects.all().order_by('-price')
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
 
         total_ads = self.object_list.count()
 
-        num_pages = total_ads // settings.TOTAL_ON_PAGE + 1
-        page = int(request.GET.get('page', 0)) + 1
+        num_pages = total_ads // settings.TOTAL_ON_PAGE
+        page = int(request.GET.get('page', 0))
 
         offset = page * settings.TOTAL_ON_PAGE
 
