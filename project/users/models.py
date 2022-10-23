@@ -45,9 +45,8 @@ class User(models.Model):
                             choices=USER_ROLE_CHOICES,
                             default=MEMBER)
     age = models.PositiveSmallIntegerField(verbose_name='Возраст')
-    location = models.ForeignKey(Location,
-                                 verbose_name='Локация',
-                                 on_delete=models.CASCADE)
+    location = models.ManyToManyField(Location,
+                                      verbose_name='Локация')
 
     def __str__(self):
         return f'{self.username}'
