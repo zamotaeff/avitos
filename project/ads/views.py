@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -108,18 +109,44 @@ class AdListView(ListView):
     model = Ad
 
     def get(self, request, *args, **kwargs):
-        response = []
+        super().get(request, *args, **kwargs)
 
-        for item in self.get_queryset():
-            response.append(
+        total_ads = self.object_list.count()
+
+        num_pages = total_ads // settings.TOTAL_ON_PAGE + 1
+        page = int(request.GET.get('page', 0)) + 1
+
+        offset = page * settings.TOTAL_ON_PAGE
+
+        if offset > total_ads:
+            self.object_list = []
+        elif offset:
+            self.object_list = self.object_list[offset:offset+settings.TOTAL_ON_PAGE]
+        else:
+            self.object_list = self.object_list[:settings.TOTAL_ON_PAGE]
+
+        items = []
+
+        for item in self.object_list:
+            items.append(
                 {
                     "id": item.pk,
                     "name": item.name,
-                    "author": item.author,
-                    "price": item.price
+                    "author_id": item.author_id,
+                    "author": item.author.first_name,
+                    "price": item.price,
+                    "description": item.description,
+                    "is_published": item.is_published,
+                    "category_id": item.category_id,
+                    "image": item.image.url if item.image else None
                 }
             )
 
+        response = {
+            "items": items,
+            "total": total_ads,
+            "num_pages": num_pages
+        }
         return JsonResponse(response, safe=False, json_dumps_params={"ensure_ascii": False})
 
 
