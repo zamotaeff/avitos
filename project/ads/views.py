@@ -11,7 +11,6 @@ from ads.models import Category, Ad
 
 
 def index_route(request):
-
     return JsonResponse({
         "status": "ok"
     })
@@ -36,18 +35,18 @@ class CategoryListView(ListView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CategoryCreateView(CreateView):
-        model = Category
+    model = Category
 
-        def post(self, request, *args, **kwargs):
-            category_data = json.loads(request.body)
+    def post(self, request, *args, **kwargs):
+        category_data = json.loads(request.body)
 
-            category = Category(name=category_data.get('name'))
-            category.save()
+        category = Category(name=category_data.get('name'))
+        category.save()
 
-            return JsonResponse({
-                "id": category.pk,
-                "name": category.name
-            })
+        return JsonResponse({
+            "id": category.pk,
+            "name": category.name
+        })
 
 
 class CategoryDetailView(DetailView):
@@ -64,11 +63,12 @@ class CategoryDetailView(DetailView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CategoryDeleteView(DeleteView):
-
     model = Category
     success_url = '/'
 
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
+        super().delete(request, *args, **kwargs)
+
         return JsonResponse(
             {
                 "status": "ok"
@@ -78,9 +78,9 @@ class CategoryDeleteView(DeleteView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CategoryUpdateView(UpdateView):
-
     model = Category
     fields = ['name']
+    success_url = '/'
 
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
@@ -98,14 +98,13 @@ class CategoryUpdateView(UpdateView):
 
         return JsonResponse(
             {
-            "id": self.object.pk,
-             "name": self.object.name
+                "id": self.object.pk,
+                "name": self.object.name
             }
         )
 
 
 class AdListView(ListView):
-
     model = Ad
 
     def get(self, request, *args, **kwargs):
@@ -126,7 +125,6 @@ class AdListView(ListView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class AdCreateView(CreateView):
-
     model = Ad
 
     def post(self, request, *args, **kwargs):
@@ -145,11 +143,13 @@ class AdCreateView(CreateView):
         return JsonResponse({
             "id": ad.pk,
             "name": ad.name,
-            "author": ad.author,
+            "author_id": ad.author_id,
+            "author": ad.author.first_name,
             "price": ad.price,
             "description": ad.description,
-            "address": ad.address,
-            "is_published": ad.is_published
+            "is_published": ad.is_published,
+            "category_id": ad.category_id,
+            "image": ad.image.url if self.object.image else None
         })
 
 
@@ -157,26 +157,28 @@ class AdDetailView(DetailView):
     model = Ad
 
     def get(self, request, *args, **kwargs):
-
         ad = self.get_object()
 
         return JsonResponse({
-            "id": ad.id,
+            "id": ad.pk,
             "name": ad.name,
-            "author": ad.author,
+            "author_id": ad.author_id,
+            "author": ad.author.first_name,
             "price": ad.price,
             "description": ad.description,
-            "address": ad.address,
             "is_published": ad.is_published,
+            "category_id": ad.category_id,
+            "image": ad.image.url if self.object.image else None
         })
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class AdDeleteView(DeleteView):
-
     model = Ad
 
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
+        super().delete(request, *args, **kwargs)
+
         return JsonResponse(
             {
                 "status": "ok"
@@ -186,9 +188,9 @@ class AdDeleteView(DeleteView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class AdUpdateView(UpdateView):
-
     model = Ad
     fields = ['name', 'author_id', 'price', 'description', 'category_id']
+    success_url = '/'
 
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
@@ -217,21 +219,20 @@ class AdUpdateView(UpdateView):
             "description": self.object.description,
             "is_published": self.object.is_published,
             "category_id": self.object.category_id,
-            "image": self.object.image
+            "image": self.object.image.url if self.object.image else None
         })
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class AdUploadImageView(UpdateView):
-
     model = Ad
     fields = ['image']
+    success_url = '/'
 
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
 
-        ad_data = json.loads(request.body)
-
-        self.object.image = ad_data['image']
+        self.object.image = request.FILES['image']
 
         try:
             self.object.full_clean()
@@ -244,10 +245,10 @@ class AdUploadImageView(UpdateView):
             "id": self.object.pk,
             "name": self.object.name,
             "author_id": self.object.author_id,
-            "author": self.object.author,
+            "author": self.object.author.first_name,
             "price": self.object.price,
             "description": self.object.description,
             "is_published": self.object.is_published,
             "category_id": self.object.category_id,
-            "image": self.object.image
+            "image": self.object.image.url if self.object.image else None
         })
