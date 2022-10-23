@@ -25,7 +25,8 @@ class Ad(models.Model):
     price = models.PositiveIntegerField()
     description = models.TextField(max_length=1000, null=True)
     is_published = models.BooleanField(default=False)
-    image = models.ImageField('uploads/images/')
+    image = models.ImageField(upload_to='images/',
+                              verbose_name='Изображение')
     category = models.ForeignKey(Category,
                                  verbose_name='Категория',
                                  on_delete=models.CASCADE)
