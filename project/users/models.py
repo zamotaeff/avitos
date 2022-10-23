@@ -53,6 +53,6 @@ class User(models.Model):
         return f'{self.username}'
 
     class Meta:
-        ordering = ()
+        ordering = ('username', )
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
