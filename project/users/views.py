@@ -19,8 +19,8 @@ class UserListView(ListView):
 
         total_users = self.object_list.count()
 
-        num_pages = total_users // settings.TOTAL_ON_PAGE + 1
-        page = int(request.GET.get('page', 0)) + 1
+        num_pages = total_users // settings.TOTAL_ON_PAGE
+        page = int(request.GET.get('page', 0))
 
         offset = page * settings.TOTAL_ON_PAGE
 
