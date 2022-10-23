@@ -23,7 +23,9 @@ class Command(BaseCommand):
                     username=item.get('username'),
                     password=item.get('password'),
                     role=item.get('role'),
-                    age=item.get('age'),
-                    location_id=item.get('location_id')
+                    age=item.get('age')
                 )
+                new_user.save()
+
+                new_user.location.add(item.get('location_id'))
                 new_user.save()
