@@ -6,10 +6,12 @@ class Location(models.Model):
                             verbose_name='Название')
     lat = models.DecimalField(max_digits=8,
                               decimal_places=6,
-                              verbose_name='Широта')
+                              verbose_name='Широта',
+                              null=True)
     lng = models.DecimalField(max_digits=8,
                               decimal_places=6,
-                              verbose_name='Долгота')
+                              verbose_name='Долгота',
+                              null=True)
 
     def __str__(self):
         return f'{self.name}'
