@@ -28,4 +28,3 @@ class Command(BaseCommand):
                 new_user.save()
 
                 new_user.location.add(item.get('location_id'))
-                new_user.save()
