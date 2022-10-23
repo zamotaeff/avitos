@@ -141,3 +141,6 @@ FILE_JSON_ADS = '../datasets/ads.json'
 FILE_JSON_CATEGORIES = '../datasets/categories.json'
 FILE_JSON_LOCATIONS = '../datasets/locations.json'
 FILE_JSON_USERS = '../datasets/users.json'
+
+# Total objects on page
+TOTAL_ON_PAGE = 5
