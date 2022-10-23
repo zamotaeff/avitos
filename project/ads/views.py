@@ -2,6 +2,7 @@ import json
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 
@@ -113,23 +114,13 @@ class AdListView(ListView):
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
 
-        total_ads = self.object_list.count()
-
-        num_pages = total_ads // settings.TOTAL_ON_PAGE
+        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page = int(request.GET.get('page', 0))
-
-        offset = page * settings.TOTAL_ON_PAGE
-
-        if offset > total_ads:
-            self.object_list = []
-        elif offset:
-            self.object_list = self.object_list[offset:offset+settings.TOTAL_ON_PAGE]
-        else:
-            self.object_list = self.object_list[:settings.TOTAL_ON_PAGE]
+        obj = paginator.get_page(page)
 
         items = []
 
-        for item in self.object_list:
+        for item in obj:
             items.append(
                 {
                     "id": item.pk,
@@ -146,9 +137,10 @@ class AdListView(ListView):
 
         response = {
             "items": items,
-            "total": total_ads,
-            "num_pages": num_pages
+            "total": self.object_list.count(),
+            "num_pages": paginator.num_pages
         }
+
         return JsonResponse(response, safe=False, json_dumps_params={"ensure_ascii": False})
 
 
