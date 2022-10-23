@@ -11,7 +11,6 @@ from users.models import User
 
 
 class UserListView(ListView):
-
     model = User
 
     def get(self, request, *args, **kwargs):
@@ -27,7 +26,7 @@ class UserListView(ListView):
         if offset > total_users:
             self.object_list = []
         elif offset:
-            self.object_list = self.object_list[offset:offset+settings.TOTAL_ON_PAGE]
+            self.object_list = self.object_list[offset:offset + settings.TOTAL_ON_PAGE]
         else:
             self.object_list = self.object_list[:settings.TOTAL_ON_PAGE]
 
@@ -42,7 +41,7 @@ class UserListView(ListView):
                     "username": item.username,
                     "role": item.role,
                     "age": item.age,
-                    "location": item.location.name
+                    "location": list(item.location.all())
                 }
             )
 
@@ -78,7 +77,7 @@ class UserCreateView(CreateView):
             "username": user.username,
             "role": user.role,
             "age": user.age,
-            "location": user.location.name
+            "location": list(user.location.all())
         }, safe=False, json_dumps_params={"ensure_ascii": False})
 
 
@@ -95,7 +94,7 @@ class UserDetailView(DetailView):
             "username": user.username,
             "role": user.role,
             "age": user.age,
-            "location": user.location.name
+            "location": list(user.location.all())
         }, safe=False, json_dumps_params={"ensure_ascii": False})
 
 
@@ -116,7 +115,8 @@ class UserDeleteView(DeleteView):
 @method_decorator(csrf_exempt, name="dispatch")
 class UserUpdateView(UpdateView):
     model = User
-    fields = ['first_name', 'last_name', 'username', 'password', 'age', 'location']
+    fields = ['first_name', 'last_name',
+              'username', 'password', 'age', 'location']
     success_url = '/'
 
     def post(self, request, *args, **kwargs):
@@ -145,5 +145,5 @@ class UserUpdateView(UpdateView):
             "username": self.object.username,
             "role": self.object.role,
             "age": self.object.age,
-            "location": self.object.location.name
+            "location": list(self.object.location.all())
         }, safe=False, json_dumps_params={"ensure_ascii": False})
