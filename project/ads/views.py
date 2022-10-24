@@ -4,12 +4,14 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 
 from ads.models import Category, Ad
+from users.models import User
 
 
 def index_route(request):
@@ -109,14 +111,18 @@ class CategoryUpdateView(UpdateView):
 
 class AdListView(ListView):
     model = Ad
-    queryset = Ad.objects.all().order_by('-price')
+    queryset = Ad.objects.select_related('author').order_by('-price')
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
 
         paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page = int(request.GET.get('page', 0))
-        obj = paginator.get_page(page)
+        # IF ?page request param exist
+        if page:
+            obj = paginator.get_page(page)
+        else:
+            obj = self.object_list
 
         items = []
 
@@ -147,16 +153,21 @@ class AdListView(ListView):
 @method_decorator(csrf_exempt, name="dispatch")
 class AdCreateView(CreateView):
     model = Ad
+    fields = ['name', 'author', ]
 
     def post(self, request, *args, **kwargs):
         ad_data = json.loads(request.body)
 
+        # User with admin role make to post ad
+        author = get_object_or_404(User, pk=ad_data['author_id'], role='admin')
+        category = get_object_or_404(Category, pk=ad_data.get('category_id'))
+
         ad = Ad(
             name=ad_data.get('name'),
-            author=ad_data.get('author'),
+            author=author,
+            category=category,
             price=ad_data.get('price'),
             description=ad_data.get('description'),
-            address=ad_data.get('address'),
             is_published=bool(ad_data.get('is_bublished'))
         )
         ad.save()
@@ -170,12 +181,13 @@ class AdCreateView(CreateView):
             "description": ad.description,
             "is_published": ad.is_published,
             "category_id": ad.category_id,
-            "image": ad.image.url if self.object.image else None
+            "image": ad.image.url if ad.image else None
         })
 
 
 class AdDetailView(DetailView):
     model = Ad
+    queryset = Ad.objects.select_related('author')
 
     def get(self, request, *args, **kwargs):
         ad = self.get_object()
@@ -189,13 +201,14 @@ class AdDetailView(DetailView):
             "description": ad.description,
             "is_published": ad.is_published,
             "category_id": ad.category_id,
-            "image": ad.image.url if self.object.image else None
+            "image": ad.image.url if ad.image else None
         })
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class AdDeleteView(DeleteView):
     model = Ad
+    success_url = '/'
 
     def delete(self, request, *args, **kwargs):
         super().delete(request, *args, **kwargs)
@@ -210,7 +223,7 @@ class AdDeleteView(DeleteView):
 @method_decorator(csrf_exempt, name="dispatch")
 class AdUpdateView(UpdateView):
     model = Ad
-    fields = ['name', 'author_id', 'price', 'description', 'category_id']
+    fields = ['name', 'author', 'price', 'description', 'category']
     success_url = '/'
 
     def post(self, request, *args, **kwargs):
@@ -218,11 +231,22 @@ class AdUpdateView(UpdateView):
 
         ad_data = json.loads(request.body)
 
-        self.object.name = ad_data['name']
-        self.object.author_id = ad_data['author_id']
-        self.object.price = ad_data['price']
-        self.object.description = ad_data['description']
-        self.object.category_id = ad_data['category_id']
+        # Only a user with the moderator status can update Ad
+        author = get_object_or_404(User,
+                                   role='moderator',
+                                   pk=ad_data.get('author_id'))
+        category = get_object_or_404(Category, pk=ad_data.get('category_id'))
+
+        if 'name' in ad_data:
+            self.object.name = ad_data['name']
+        if 'author' in ad_data:
+            self.object.author = author
+        if 'price' in ad_data:
+            self.object.price = ad_data['price']
+        if 'description' in ad_data:
+            self.object.description = ad_data['description']
+        if 'category' in ad_data:
+            self.object.category = category
 
         try:
             self.object.full_clean()
@@ -235,7 +259,7 @@ class AdUpdateView(UpdateView):
             "id": self.object.pk,
             "name": self.object.name,
             "author_id": self.object.author_id,
-            "author": self.object.author,
+            "author": self.object.author.first_name,
             "price": self.object.price,
             "description": self.object.description,
             "is_published": self.object.is_published,
