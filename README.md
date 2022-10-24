@@ -1,4 +1,4 @@
-# Django Test Porject (D'avito)
+# Django Test Project (D'avito)
 
 ## Start project
 
