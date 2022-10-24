@@ -1,7 +1,8 @@
 import json
-from faker import Faker
 from unittest import TestCase
+
 import requests
+from faker import Faker
 
 HOST = 'http://127.0.0.1:8000'
 fake = Faker(['en-US'])

@@ -1,7 +1,8 @@
 import json
-from faker import Faker
 from unittest import TestCase
+
 import requests
+from faker import Faker
 
 HOST = 'http://127.0.0.1:8000'
 fake = Faker()
@@ -11,8 +12,9 @@ class CategoryClassTestCase(TestCase):
 
     def test_detail(self):
         cat_id = self.test_create()
-        response = requests.get(f'{HOST}/cat/{cat_id}/', timeout=5)
-        self.assertEqual(response.status_code, 200)
+        if cat_id:
+            response = requests.get(f'{HOST}/cat/{cat_id}/', timeout=5)
+            self.assertEqual(response.status_code, 200)
 
     def test_list(self):
         response = requests.get(f'{HOST}/cat/')

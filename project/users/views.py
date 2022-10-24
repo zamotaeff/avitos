@@ -57,7 +57,6 @@ class UserListView(ListView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UserCreateView(CreateView):
-
     model = User
     success_url = '/'
 

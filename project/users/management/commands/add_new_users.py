@@ -1,8 +1,8 @@
 import json
 
-from avito.settings import FILE_JSON_USERS
 from django.core.management import BaseCommand
 
+from avito.settings import FILE_JSON_USERS
 from users.models import User
 
 
@@ -16,7 +16,6 @@ class Command(BaseCommand):
             json_data = json.load(file)
 
             for item in json_data:
-
                 new_user = User(
                     first_name=item.get('first_name'),
                     last_name=item.get('last_name'),

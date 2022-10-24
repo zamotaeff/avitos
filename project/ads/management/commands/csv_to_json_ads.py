@@ -1,10 +1,10 @@
+from django.core.management.base import BaseCommand
+
+from ads.helpers import convert_csv_to_json
 from avito.settings import (FILE_CSV_ADS,
                             FILE_JSON_ADS,
                             FILE_CSV_CATEGORIES,
                             FILE_JSON_CATEGORIES)
-from django.core.management.base import BaseCommand
-
-from ads.helpers import convert_csv_to_json
 
 
 class Command(BaseCommand):

@@ -12,7 +12,6 @@ class Command(BaseCommand):
     # TODO: pass file names in parameters
 
     def handle(self, *args, **kwargs):
-
         with open(settings.FILE_JSON_CATEGORIES, 'r', encoding='utf-8') as file:
             json_data = json.load(file)
 

@@ -1,9 +1,9 @@
+from django.core.management.base import BaseCommand
+
 from avito.settings import (FILE_CSV_LOCATIONS,
                             FILE_JSON_LOCATIONS,
                             FILE_CSV_USERS,
                             FILE_JSON_USERS)
-from django.core.management.base import BaseCommand
-
 from users.helpers import convert_csv_to_json
 
 

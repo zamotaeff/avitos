@@ -16,7 +16,6 @@ class Command(BaseCommand):
             json_data = json.load(file)
 
             for item in json_data:
-
                 new_ads = Ad(
                     name=item.get('name'),
                     author_id=item.get('author_id'),
