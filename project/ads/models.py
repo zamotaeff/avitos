@@ -5,7 +5,8 @@ from users.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=20,
-                            verbose_name='Категория')
+                            verbose_name='Категория',
+                            unique=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -26,7 +27,9 @@ class Ad(models.Model):
     description = models.TextField(max_length=1000, null=True)
     is_published = models.BooleanField(default=False)
     image = models.ImageField(upload_to='images/',
-                              verbose_name='Изображение')
+                              verbose_name='Изображение',
+                              null=True,
+                              blank=True)
     category = models.ForeignKey(Category,
                                  verbose_name='Категория',
                                  on_delete=models.CASCADE)
