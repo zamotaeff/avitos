@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
+from ads.models import Ad
 from users.models import User, Location
 
 
@@ -41,7 +42,8 @@ class UserListView(ListView):
                     "username": item.username,
                     "role": item.role,
                     "age": item.age,
-                    "location": list(loc.name for loc in item.location.all())
+                    "location": list(loc.name for loc in item.location.all()),
+                    "ads_published": Ad.objects.filter(author_id=item.pk, is_published=True).count()
                 }
             )
 
