@@ -3,6 +3,7 @@ import json
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -23,7 +24,7 @@ def index_route(request):
 @method_decorator(csrf_exempt, name='dispatch')
 class CategoryListView(ListView):
     model = Category
-    queryset = Category.objects.all().order_by('name')
+    queryset = Category.objects.annotate(num_ads=Count('ad')).order_by('name')
 
     def get(self, request, *args, **kwargs):
         categories = self.get_queryset()
@@ -33,6 +34,7 @@ class CategoryListView(ListView):
             response.append({
                 "id": category.id,
                 "name": category.name,
+                "ads_number": category.num_ads
             })
 
         return JsonResponse(response, safe=False, json_dumps_params={"ensure_ascii": False})
