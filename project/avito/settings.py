@@ -175,6 +175,16 @@ LOGGING = {
         }
     },
     'loggers': {
+        'django.server': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': True,
+        },
+        'django.request': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': True,
+        },
         'django.db': {
             'level': 'DEBUG',
             'handlers': ['console'],
