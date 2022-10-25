@@ -13,6 +13,7 @@ from users.models import User, Location
 
 class UserListView(ListView):
     model = User
+    queryset = User.objects.prefetch_related('location').all()
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
