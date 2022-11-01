@@ -9,7 +9,8 @@
 - cd ..
 - cd project
 - python3 manage.py migrate
-- python3 manage.py csv_to_json
+- python3 manage.py csv_to_json_users
+- python3 manage.py csv_to_json_ads
 - python3 manage.py add_new_locations
 - python3 manage.py add_new_users
 - python3 manage.py add_new_categories

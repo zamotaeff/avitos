@@ -6,9 +6,12 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from rest_framework.generics import CreateAPIView
+from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Ad
 from users.models import User, Location
+from users.serializers import UserCreateSerializer, LocationSerializer
 
 
 class UserListView(ListView):
@@ -120,9 +123,7 @@ class UserDeleteView(DeleteView):
         super().delete(request, *args, **kwargs)
 
         return JsonResponse(
-            {
-                "status": "ok"
-            }
+            {"status": "ok"}, status=204
         )
 
 
@@ -172,3 +173,14 @@ class UserUpdateView(UpdateView):
             "age": self.object.age,
             "location": list(loc.name for loc in self.object.location.all())
         }, safe=False, json_dumps_params={"ensure_ascii": False})
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class UserCreateAPIView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserCreateSerializer
+
+
+class LocationViewSet(ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
