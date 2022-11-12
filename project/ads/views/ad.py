@@ -8,9 +8,11 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Ad
+from ads.permissions import IsOwnerAdOrStaff
 from ads.serializers import AdSerializer, AdDetailSerializer, AdListSerializer
 from users.models import User
 
@@ -212,6 +214,17 @@ class AdViewSet(ModelViewSet):
         'retrieve': AdDetailSerializer,
         'list': AdListSerializer
     }
+
+    default_permission = [AllowAny()]
+    permissions = {
+        'create': [IsAuthenticated()],
+        'update': [IsAuthenticated(), IsOwnerAdOrStaff()],
+        'partial_update': [IsAuthenticated(), IsOwnerAdOrStaff()],
+        'destroy': [IsAuthenticated(), IsOwnerAdOrStaff()],
+    }
+
+    def get_permissions(self):
+        return self.permissions.get(self.action, self.default_permission)
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer)
