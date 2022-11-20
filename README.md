@@ -21,6 +21,7 @@
 ## Tests
 
 - cd project
+- pytest
 - python3 manage.py test ads
 - python3 manage.py test users
 
