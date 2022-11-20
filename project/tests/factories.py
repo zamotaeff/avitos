@@ -1,6 +1,7 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 import factory
+from django.utils import timezone
 
 from ads.models import Category, Ad
 from users.models import User
@@ -19,7 +20,10 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
 
     username = factory.Faker('name')
-    birth_date = date.today() - timedelta(days=5000)
+    password = factory.Faker('password')
+    role = 'admin'
+    age = 43
+    birth_date = timezone.now() - timedelta(days=500)
 
 
 class AdFactory(factory.django.DjangoModelFactory):
@@ -30,3 +34,6 @@ class AdFactory(factory.django.DjangoModelFactory):
     category = factory.SubFactory(CategoryFactory)
     author = factory.SubFactory(UserFactory)
     price = 1400
+    description = ""
+    is_published = True
+
