@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
 
 from users.validators import check_birth_date
 
@@ -42,13 +43,17 @@ class UserRoles:
 
 class User(AbstractUser):
     first_name = models.CharField(max_length=30,
-                                  verbose_name='Имя')
+                                  verbose_name='Имя',
+                                  null=True,
+                                  blank=True)
     last_name = models.CharField(max_length=50,
-                                 verbose_name='Фамилия')
-    username = models.CharField(max_length=50,
+                                 verbose_name='Фамилия',
+                                 null=True,
+                                 blank=True)
+    username = models.CharField(max_length=250,
                                 verbose_name='Никнейм',
                                 unique=True)
-    password = models.CharField(max_length=50,
+    password = models.CharField(max_length=250,
                                 verbose_name='Пароль')
     role = models.CharField(max_length=10,
                             verbose_name='Роль пользователя',
@@ -59,18 +64,22 @@ class User(AbstractUser):
                                       null=True,
                                       blank=True)
     email = models.EmailField(verbose_name='email address',
+                              unique=True,
                               blank=True,
+                              null=True,
                               validators=[RegexValidator(
                                   regex="@rambler.ru",
                                   inverse_match=True,
                                   message="Домен rambler запрещен.")])
     age = models.PositiveSmallIntegerField(verbose_name='Возраст',
-                                           editable=False)
+                                           editable=False,
+                                           null=True,
+                                           blank=True)
     location = models.ManyToManyField(Location,
                                       verbose_name='Локация')
 
     def save(self, *args, **kwargs):
-        self.age = relativedelta(date.today(), self.birth_date).year
+        self.age = relativedelta(timezone.now(), self.birth_date).year
         super().save(*args, **kwargs)
 
     def __str__(self):
