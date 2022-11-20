@@ -18,13 +18,13 @@ class UserClassTestCase(TestCase):
     def test_detail_pagination(self):
         response = requests.get(f'{HOST}/user/?page=1', timeout=5)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json().get('items', 0)), 5)
-        print('Items on page', len(response.json().get('items', 0)))
+        self.assertEqual(len(response.json().get('results', 0)), 5)
+        print('Items on page', len(response.json().get('results', 0)))
 
     def test_list(self):
         response = requests.get(f'{HOST}/user/')
         self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(len(response.json().get('items', 0)), 0)
+        self.assertNotEqual(len(response.json().get('results', 0)), 0)
         print('Items on page')
 
     def test_create(self):
@@ -60,6 +60,7 @@ class UserClassTestCase(TestCase):
             "first_name": fake.name(),
             "last_name": fake.name(),
             "password": "password",
+            "age": 21,
             "price": 1200,
             "description": "ad.description",
             "is_published": True,

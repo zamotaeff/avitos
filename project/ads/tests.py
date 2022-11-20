@@ -67,13 +67,13 @@ class AdClassTestCase(TestCase):
     def test_detail_pagination(self):
         response = requests.get(f'{HOST}/ad/?page=1', timeout=5)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json().get('items', 0)), 5)
-        print('Items on page', len(response.json().get('items', 0)))
+        self.assertEqual(len(response.json().get('results', 0)), 5)
+        print('Items on page', len(response.json().get('results', 0)))
 
     def test_list(self):
         response = requests.get(f'{HOST}/ad/')
         self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(len(response.json().get('items', 0)), 0)
+        self.assertNotEqual(len(response.json().get('results', 0)), 0)
         print('Items on page')
 
     def test_create(self):
