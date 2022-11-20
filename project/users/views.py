@@ -1,5 +1,4 @@
-from django.views.generic import ListView
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -11,7 +10,7 @@ from users.serializers import \
     UserSerializer
 
 
-class UserListView(ListView):
+class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
 
